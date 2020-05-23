@@ -184,8 +184,3 @@ class sudoku:
 
         if verbose: print('Solved!')
         return 1
-
-board = np.load('./test-sudokus/evil2.npy')
-my_sudoku = sudoku(board=board)
-my_sudoku.solve()
-my_sudoku.print_board()
