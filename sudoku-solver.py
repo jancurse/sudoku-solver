@@ -1,36 +1,7 @@
+from help_functions import *
 import numpy as np
+import copy
 
-def find_block(i, j):
-    """
-    :return: all coordinates of fields in the same block as (i,j)
-    """
-    I, J = int(i / 3), int(j / 3)
-    block = []
-    for ii in range(3):
-        for jj in range(3):
-            block.append((3 * I + ii, 3 * J + jj))
-    return block
-
-def to_small_square(i,j):
-    """
-    :return: Given coordinate (i,j) of a field, returns (ii,jj), where
-    (i,j) is the jj-th number in the ii-th small square counting in lexicographic order
-    """
-    I, J = int(i / 3), int(j / 3)
-    ii = 3*I+J
-    jj = 3*(i - 3*I)+(j-3*J)
-    return ii, jj
-
-def to_big_square(ii,jj):
-    """
-    :return: Gives coordinates (i,j) of the jj-th field in the ii-th small square
-    """
-    I, II = int(ii/3), int(jj/3)
-    J, JJ = ii % 3, int(jj % 3)
-
-    i = 3*I + II
-    j = 3*J + JJ
-    return i, j
 
 class sudoku:
 
@@ -180,7 +151,8 @@ class sudoku:
             ii, jj = to_small_square(i,j)
             self.squ_candidates[x][ii] = [jj]
 
-    def solve(self):
+    def solve(self, verbose=1):
+        solvable = 1
         for i in range(9):
             for j in range(9):
                 self.update_candidates(i,j)
@@ -188,17 +160,32 @@ class sudoku:
         while True:
             flag = self.fill_numbers()
             if flag == 2:
-                print('Not solvable')
-                return 2
-            if not flag: break
+                if verbose: print('Not solvable')
+                return 0
+            if flag == 0: break
 
-
+        # If we are not done, we start making educated guesses
         if self.empty_fields:
-            print('Could not solve :(')
-        else:
-            print('Solved!')
+            # find a good empty field to guess
+            best_field, best_value = (0,0), 10
+            for (i,j) in self.empty_fields:
+                if len(self.candidates[i][j]) < best_value:
+                    best_field = (i,j)
+                    best_value = len(self.candidates[i][j])
+                    if best_value == 2: break
 
-board = np.load('./test-sudokus/hard.npy')
+            for x in self.candidates[i][j]:
+                help_sudoku = copy.deepcopy(self)
+                help_sudoku.fill_number(i,j,x)
+                help_solvable = help_sudoku.solve(verbose=0)
+                if help_solvable:
+                    self.__dict__ = help_sudoku.__dict__.copy()
+                    break
+
+        if verbose: print('Solved!')
+        return 1
+
+board = np.load('./test-sudokus/evil2.npy')
 my_sudoku = sudoku(board=board)
 my_sudoku.solve()
 my_sudoku.print_board()
