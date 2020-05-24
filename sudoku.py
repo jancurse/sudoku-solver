@@ -36,6 +36,33 @@ class sudoku:
 
         #print(self.board)
 
+    def check_board(self):
+        for i in range(9):
+            for j in range(9):
+                x = self.board[i,j]
+                if x:
+                    #check row
+                    for k in range(9):
+                        if k == j: continue
+                        if self.board[i,k] == x:
+                            #print('Field (', i, ',', j, ') is the same as field (', i, ',', k, ')!')
+                            return False
+
+                    # check column
+                    for k in range(9):
+                        if k == i: continue
+                        if self.board[k, j] == x:
+                            #print('Field (', i, ',', j, ') is the same as field (', k, ',', j, ')!')
+                            return False
+
+                    # check small square
+                    for (k,l) in find_block(i,j):
+                        if (i == k and j == l): continue
+                        if self.board[k,l] == x:
+                            #print('Field (', i, ',', j, ') is the same as field (', k, ',', l, ')!')
+                            return False
+        return True
+
     def fill_number(self,i,j,x):
         self.board[i][j] = x
         self.update_candidates(i, j)
@@ -152,6 +179,9 @@ class sudoku:
             self.squ_candidates[x][ii] = [jj]
 
     def solve(self, verbose=1):
+        if not self.check_board():
+            return 0
+
         solvable = 0
         for i in range(9):
             for j in range(9):

@@ -312,7 +312,6 @@ class Ui_MainWindow(object):
                 exec(program)
                 if text:
                     board[i][j] = int(text)
-        print(board)
         return board
 
     def fill_board(self,board):
@@ -326,9 +325,7 @@ class Ui_MainWindow(object):
         my_sudoku = sudoku(board)
         solvable = my_sudoku.solve(verbose=0)
         if solvable: self.fill_board(my_sudoku.board)
-        else:
-            self.label_uns.setText('This Sudoku is not solvable!')
-            self.fill_board(my_sudoku.board)
+        else: self.label_uns.setText('This Sudoku is not solvable!')
 
     def clear_button(self):
         for i in range(9):
