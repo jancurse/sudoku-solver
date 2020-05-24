@@ -1,6 +1,8 @@
 # Sudoku Solver
+## GUI
+Run `python3 sudoku-solver.py` from within the gui folder
 
-## Usage
+## Code
 'sudoku.py' implements a simple sudoku class.
   - `my_sudoku = sudoku(board)` creates a sudoku, where board is a 2d array of shape (9,9) representing the board
   - `my_sudoku.solve()` solves the sudoku
@@ -9,6 +11,8 @@
 'test_script.py' runs an example
  
 './test-sudokus' contains a few random sudokus of different difficulties from https://www.websudoku.com/ that can be easilly loaded with np.load()
+
+'/gui/sudoku-solver.py' implements the gui
 
 ## Algorithm
 We maintain a number of candidate lists, which are attributes of the sudoku.
