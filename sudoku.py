@@ -152,7 +152,7 @@ class sudoku:
             self.squ_candidates[x][ii] = [jj]
 
     def solve(self, verbose=1):
-        solvable = 1
+        solvable = 0
         for i in range(9):
             for j in range(9):
                 self.update_candidates(i,j)
@@ -179,8 +179,14 @@ class sudoku:
                 help_sudoku.fill_number(i,j,x)
                 help_solvable = help_sudoku.solve(verbose=0)
                 if help_solvable:
+                    solvable = 1
                     self.__dict__ = help_sudoku.__dict__.copy()
                     break
+        else:
+            solvable = 1
 
-        if verbose: print('Solved!')
-        return 1
+        if verbose:
+            if solvable: print('Solved!')
+            else: print('Unsolvable!')
+
+        return solvable
